@@ -45,6 +45,7 @@ def get_key_sequence(encrypted_text, cipher_keys):
     last_key = [encrypted_text[-1]//key_sequence[-1]]
     key_sequence = first_key + key_sequence + last_key
     print(key_sequence)
+    return key_sequence
 
 
 def get_decrypt_dict(cipher_keys):
@@ -53,6 +54,13 @@ def get_decrypt_dict(cipher_keys):
     for i, key in enumerate(cipher_keys):
         decrypt_dict[key] = chr(ascii_start + i)
     return decrypt_dict
+
+
+def get_decrypted_text(key_sequence, decrypt_dict):
+    decrypted_text = ''
+    for key in key_sequence:
+        decrypted_text += decrypt_dict[key]
+    return decrypted_text
 
 
 n_cases = int(input())
@@ -80,5 +88,5 @@ for i in range(n_cases):
     print(decrypt_dict)
     print(cipher_keys)
     key_sequence = get_key_sequence(encrypted_texts[i], cipher_keys)
-    # decrypted_text = get_decrypted_text(key_sequence)
-    # print("DECRYPTED\n", decrypted_text)
+    decrypted_text = get_decrypted_text(key_sequence, decrypt_dict)
+    print("DECRYPTED\n", decrypted_text)
