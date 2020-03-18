@@ -25,31 +25,34 @@ def factorise(keys, keys_product):
 
 
 def get_keys(possible_primes, encrypted_text):
-    # encrypted_text = list(map(int, encrypted_text.split()))
     keys = []
     for index, crypt in enumerate(encrypted_text):
-        # for prime in possible_primes:
-        #     quotient, remainder = divmod(crypt, prime)
-        #     if remainder == 0:
-        #         keys.append(prime)
-        #         keys.append(quotient)
-        #         break
         keys += factorise(possible_primes, crypt)
     return list(set(keys))
 
 
-def decrypt_text(encrypted_text, cipher_keys):
+def get_key_sequence(encrypted_text, cipher_keys):
     text_len = len(encrypted_text)
-    decrypted = []
+    key_sequence = []
     for i in range(text_len - 1):
-        candidate_chars = []
-        next_candidate_chars = []
-        for index, prime in enumerate(cipher_keys):
-            quotient, remainder = divmod(crypt, prime)
-            if remainder == 0:
-                candidate_chars.append(prime)
-                candidate_chars.append(quotient)
-                break
+        current_keys = factorise(cipher_keys, encrypted_text[i])
+        next_keys = factorise(cipher_keys, encrypted_text[i+1])
+        if (current_keys[0] == next_keys[0]) or (current_keys[0] == next_keys[1]):
+            key_sequence.append(current_keys[0])
+        else:
+            key_sequence.append(current_keys[1])
+    first_key = [encrypted_text[0]//key_sequence[0]]
+    last_key = [encrypted_text[-1]//key_sequence[-1]]
+    key_sequence = first_key + key_sequence + last_key
+    print(key_sequence)
+
+
+def get_decrypt_dict(cipher_keys):
+    decrypt_dict = {}
+    ascii_start = 65
+    for i, key in enumerate(cipher_keys):
+        decrypt_dict[key] = chr(ascii_start + i)
+    return decrypt_dict
 
 
 n_cases = int(input())
@@ -73,5 +76,9 @@ for i in range(n_cases):
     index_of_n = bisect.bisect_right(all_primes, n)
     possible_primes = all_primes[:index_of_n]
     cipher_keys = get_keys(possible_primes, encrypted_texts[i])
+    decrypt_dict = get_decrypt_dict(cipher_keys)
+    print(decrypt_dict)
     print(cipher_keys)
-    # decrypt_text(encrypted_texts[i], cipher_keys)
+    key_sequence = get_key_sequence(encrypted_texts[i], cipher_keys)
+    # decrypted_text = get_decrypted_text(key_sequence)
+    # print("DECRYPTED\n", decrypted_text)
