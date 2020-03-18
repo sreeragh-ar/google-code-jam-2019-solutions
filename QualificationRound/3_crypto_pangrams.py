@@ -28,7 +28,9 @@ def get_keys(possible_primes, encrypted_text):
     keys = []
     for index, crypt in enumerate(encrypted_text):
         keys += factorise(possible_primes, crypt)
-    return list(set(keys))
+    keys = list(set(keys))
+    keys.sort()
+    return keys
 
 
 def get_key_sequence(encrypted_text, cipher_keys):
